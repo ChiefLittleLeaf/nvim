@@ -28,7 +28,7 @@ vim.keymap.set("n", "N", "nzzzv")
 -- Perserves copy in buffer for pasting over highlighted objects by deleting the highlighted stuff into the void buffer
 vim.keymap.set("x", "<leader>p", "\"_dP")
 
--- copy system buffer
+-- copy system buffer: from absjornHaland
 vim.keymap.set("n", "<leader>y", "\"+y")
 vim.keymap.set("v", "<leader>y", "\"+y")
 vim.keymap.set("n", "<leader>Y", "\"+Y")
