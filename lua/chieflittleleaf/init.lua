@@ -3,7 +3,7 @@ require("chieflittleleaf.remap")
 require("chieflittleleaf.packer")
 
 local augroup = vim.api.nvim_create_augroup
-local ThePrimeagenGroup = augroup('chieflittleleaf', {})
+local chieflittleleaf = augroup('chieflittleleaf', {})
 
 local autocmd = vim.api.nvim_create_autocmd
 local yank_group = augroup('HighlightYank', {})
@@ -33,6 +33,6 @@ vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
 
-vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()]]
+vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.format()]]
 -- or
-vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()]]
+vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
