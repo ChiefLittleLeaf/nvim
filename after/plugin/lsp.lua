@@ -25,20 +25,42 @@ lsp.setup_nvim_cmp({
     mapping = cmp_mappings
 })
 
-lsp.on_attach(function(client, bufnr)
-    print("help")
-    local opts = { buffer = bufnr, remap = false }
+-- Remap some keys for diagnostics, troubleshooting, and info
+local opts = { remap = false }
+vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
+vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
+vim.keymap.set("n", "<leader>vws", function() vim.lsp.buf.workspace_symbol() end, opts)
+vim.keymap.set("n", "<leader>vd", function() vim.diagnostic.open_float() end, opts)
+vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end, opts)
+vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end, opts)
+vim.keymap.set("n", "<leader>vca", function() vim.lsp.buf.code_action() end, opts)
+vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, opts)
+vim.keymap.set("n", "<leader>vcn", function() vim.lsp.buf.rename() end, opts)
+vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
 
-    vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
-    vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
-    vim.keymap.set("n", "<leader>vws", function() vim.lsp.buf.workspace_symbol() end, opts)
-    vim.keymap.set("n", "<leader>vd", function() vim.diagnostics.open_float() end, opts)
-    vim.keymap.set("n", "[d", function() vim.diagnostics.goto_next() end, opts)
-    vim.keymap.set("n", "]d", function() vim.diagnostics.goto_prev() end, opts)
-    vim.keymap.set("n", "<leader>vca", function() vim.lsp.buf.code_action() end, opts)
-    vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, opts)
-    vim.keymap.set("n", "<leader>vcn", function() vim.lsp.buf.rename() end, opts)
-    vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
-end)
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics, {
+        -- Enable underline, use default values
+        underline = true,
+        -- Enable virtual text, override spacing to 4
+        virtual_text = {
+            spacing = 4,
+            prefix = '~',
+        },
+        -- Use a function to dynamically turn signs off
+        -- and on, using buffer local variables
+        signs = function(bufnr)
+            local ok, result = pcall(vim.api.nvim_buf_get_var, bufnr, 'show_signs')
+            -- No buffer local variable set, so just enable by default
+            if not ok then
+                return true
+            end
+
+            return result
+        end,
+        -- Disable a feature
+        update_in_insert = false,
+    }
+)
 
 lsp.setup()
